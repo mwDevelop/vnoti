@@ -112,13 +112,11 @@ const HomeScreen = ({ navigation, route }) => {
     fadeIn();
   };
 
-  console.log();
-
   return (
     <Container color={theme.MainColor}>
       <StatusBar style={theme.MainColor} />
       <ProfilInfo navigation={navigation} />
-      {modal === "open" ? (
+      {/* {modal === "open" ? (
         <ModalBg>
           <Modal
             point={point}
@@ -159,7 +157,7 @@ const HomeScreen = ({ navigation, route }) => {
         </ModalBg>
       ) : (
         ""
-      )}
+      )} */}
 
       <>
         <CalendarWrap>
@@ -248,7 +246,7 @@ const HomeScreen = ({ navigation, route }) => {
                         <ScheduleList
                           key={k}
                           data={item}
-                          noneClick={noneClick}
+                          noneClick={noneClick === "today"}
                           day={dateSelected}
                           navigation={navigation}
                           getModalData={getModalData}

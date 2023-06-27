@@ -92,11 +92,11 @@ const TabComponent = ({ navigation }) => {
         component={MyPillComponent}
         options={{ unmountOnBlur: true }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="리워드"
         component={RewardComponent}
         options={{ unmountOnBlur: true }}
-      />
+      /> */}
 
       <Tab.Screen
         name="내 정보"

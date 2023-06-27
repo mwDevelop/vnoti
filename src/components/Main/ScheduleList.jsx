@@ -20,23 +20,36 @@ const ScheduleList = ({ data, noneClick, getModalData }) => {
     setConfirm(data.schedule_confirm);
   }, [data]);
 
+  // const onPressConfirm = (e) => {
+  //   setConfirm(e);
+
+  //   const data = {
+  //     schedule_confirm: e,
+  //     point_yn: "y",
+  //   };
+
+  //   apis.postSchedule(schedule_id, data).then((res) => {
+  //     const data = res.data.data;
+  //     const value = e === 1 ? "오늘 복용 완료!" : "복용이 취소되었습니다.";
+  //     if (res.data.result === "004") {
+  //       getModalData(0, "open", value, "004");
+  //     } else {
+  //       getModalData(data?.get_point, "open", value, null);
+  //     }
+  //   });
+  // };
+
   const onPressConfirm = (e) => {
     setConfirm(e);
-
+    {
+      e == "1"
+        ? Alert.alert("복용 완료하였습니다!")
+        : Alert.alert("복용 완료가 취소되었습니다.");
+    }
     const data = {
       schedule_confirm: e,
-      point_yn: "y",
     };
-
-    apis.postSchedule(schedule_id, data).then((res) => {
-      const data = res.data.data;
-      const value = e === 1 ? "오늘 복용 완료!" : "복용이 취소되었습니다.";
-      if (res.data.result === "004") {
-        getModalData(0, "open", value, "004");
-      } else {
-        getModalData(data?.get_point, "open", value, null);
-      }
-    });
+    apis.postSchedule(schedule_id, data).then((res) => {});
   };
 
   return (
@@ -46,9 +59,9 @@ const ScheduleList = ({ data, noneClick, getModalData }) => {
         <Time>{time}</Time>
       </TimeWrap>
       <Bg></Bg>
-      <Wrap color={noneClick === "today" ? "#FFF9F1" : "#E7E7E7 "}>
+      <Wrap color={noneClick ? "#FFF9F1" : "#E7E7E7"}>
         <PillInfo>
-          {shape == 1 ? (
+          {shape === 1 ? (
             <Icon
               width="40px"
               height="40px"
@@ -59,7 +72,7 @@ const ScheduleList = ({ data, noneClick, getModalData }) => {
               }
               resizeMode="contain"
             />
-          ) : shape == 2 ? (
+          ) : shape === 2 ? (
             <Icon
               width="40px"
               height="40px"
@@ -86,9 +99,9 @@ const ScheduleList = ({ data, noneClick, getModalData }) => {
           <InfoWrap>
             <Pill>{medicineData.medicine_name}</Pill>
             <Pill>
-              {guideline == 1 ? "식전 " : guideline == 2 ? "식후 " : ""}
+              {guideline === 1 ? "식전 " : guideline === 2 ? "식후 " : ""}
               {dose}
-              {shape == 1 ? "알" : shape == 2 ? "포" : "스푼"} 복용
+              {shape === 1 ? "알" : shape === 2 ? "포" : "스푼"} 복용
             </Pill>
           </InfoWrap>
         </PillInfo>
