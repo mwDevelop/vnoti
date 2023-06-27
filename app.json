@@ -1,10 +1,13 @@
 {
+  "name": "브이노티",
+  "displayName": "브이노티",
   "expo": {
-    "name": "iosvnoti",
-    "slug": "iosvnoti",
-    "version": "1.0.0",
+    "name": "브이노티",
+    "slug": "ProjectHavita",
+    "version": "1.5.1",
+    "scheme": "vnoti",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/IOS.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -14,20 +17,71 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "supportsTablet": true,
+      "backgroundColor": "#FFFFFF",
+      "bundleIdentifier": "kr.vnoti",
+
+      "buildNumber": "1.5.1",
+      "splash": {
+        "image": "./assets/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "프로필 사진 첨부기능 사용을 위해 사진 라이브러리 접근권한 동의가 필요합니다. 설정에서 이를 변경할 수 있습니다."
       }
     },
+    "android": {
+      "package": "kr.vnoti",
+      "versionCode": 15,
+      "useNextNotificationsApi": true,
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleSignIn": {
+          "apiKey": "AIzaSyD7_L7ndCJ9vQwiwpCbcAlqqBBMNBjVHao"
+        }
+      },
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "RECEIVE_BOOT_COMPLETED",
+        "SCHEDULE_EXACT_ALARM"
+      ]
+    },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon.png",
+      "config": {
+        "firebase": {
+          "measurementId": "G-HQV644MBXE"
+        }
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ba1e2cc8-3bfd-405e-837c-162d16de6563"
+      }
+    },
+
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ]
   }
 }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "290889765158",
+    "project_id": "vnoti-86c10",
+    "storage_bucket": "vnoti-86c10.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:290889765158:android:d5f1856c7d84477e4571e7",
+        "android_client_info": {
+          "package_name": "kr.vnoti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "290889765158-7o2ph1rj6hqtihci0dco1bpqhlr2tmu1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzD0J8z40Yb91H8bS4WNt6XJd0kQ2p5qI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "290889765158-7o2ph1rj6hqtihci0dco1bpqhlr2tmu1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
