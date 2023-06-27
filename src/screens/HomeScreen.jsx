@@ -116,7 +116,7 @@ const HomeScreen = ({ navigation, route }) => {
     <Container color={theme.MainColor}>
       <StatusBar style={theme.MainColor} />
       <ProfilInfo navigation={navigation} />
-      {/* {modal === "open" ? (
+      {modal === "open" ? (
         <ModalBg>
           <Modal
             point={point}
@@ -157,7 +157,7 @@ const HomeScreen = ({ navigation, route }) => {
         </ModalBg>
       ) : (
         ""
-      )} */}
+      )}
 
       <>
         <CalendarWrap>
