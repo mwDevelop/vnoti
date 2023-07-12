@@ -5,21 +5,22 @@ import "react-native-gesture-handler";
 import MainDrawer from "../Drawer/MainDrawer";
 import { UserStore } from "../../context";
 import ProfilImg from "../../elements/ProfilImg";
-import MainUserProfile from "../../elements/MainUserProfile";
 import { TouchableOpacity } from "react-native";
 
-const ProfilInfo = ({ navigation, home }) => {
-  const { user, profile, isLogin } = useContext(UserStore);
+const ProfilInfo = ({ navigation, value }) => {
+  const { user, profile, isLogin, update } = useContext(UserStore);
 
   const userName =
-    user?.userProfileId == profile?.userProfileId
+    user?.userProfileId === profile?.userProfileId || value === "reward"
       ? profile?.userName
       : user?.userName;
 
-  const userCheck =
-    user?.userProfileId == profile?.userProfileId ? "main" : "member";
+  const userImg =
+    user?.userProfileId === profile?.userProfileId || value === "reward"
+      ? profile?.userProfile
+      : user?.userProfile;
 
-  useEffect(() => {}, [user, profile]);
+  useEffect(() => {}, [user, profile, update]);
 
   const checkPlatform = Platform.OS === "ios";
 
@@ -31,24 +32,26 @@ const ProfilInfo = ({ navigation, home }) => {
       <Container>
         <UserInfo>
           <MainDrawer navigation={navigation} />
-          {/* 로그인전 프로필아이콘 + 문구추가 */}
-          {isLogin == false ? (
-            <Btn onPress={() => navigation.navigate("로그인")}>
-              <Img
-                size={"55px"}
-                resizeMode="contain"
-                source={require("../../../assets/images/Profil/profil_10.png")}
-              />
-              <UserName> 로그인해주세요!</UserName>
-            </Btn>
-          ) : isLogin && userCheck == "main" ? (
-            <>
-              <MainUserProfile size="55px" />
-              <UserName>{userName}님</UserName>
-            </>
-          ) : (
-            <ProfilImg size="55px" />
-          )}
+
+          <>
+            {isLogin === null ? (
+              ""
+            ) : isLogin === false ? (
+              <Btn onPress={() => navigation.navigate("로그인")}>
+                <Img
+                  size={"55px"}
+                  resizeMode="contain"
+                  source={require("../../../assets/images/Profil/profil_10.png")}
+                />
+                <UserName> 로그인해주세요!</UserName>
+              </Btn>
+            ) : (
+              <>
+                <ProfilImg size="55px" url={userImg} />
+                <UserName>{userName}님</UserName>
+              </>
+            )}
+          </>
         </UserInfo>
       </Container>
     </Wrap>
@@ -68,6 +71,7 @@ const Container = styled(View)`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  height: 100%;
 `;
 
 const UserInfo = styled(View)`

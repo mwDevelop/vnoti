@@ -9,7 +9,6 @@ import {
   Alert,
 } from "react-native";
 import styled from "styled-components";
-import * as Clipboard from "expo-clipboard";
 
 const ProfilImg = ({ url, onChangePhoto, size, getImg }) => {
   const [status, requestPremission] = ImagePicker.useMediaLibraryPermissions();

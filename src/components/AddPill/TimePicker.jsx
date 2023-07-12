@@ -30,19 +30,13 @@ const TimePicker = ({ getTimeData, width, time, value }) => {
   const month = moment().format("mm");
   const day = moment().format("DD");
 
-  const timeSplit =
-    selectedTime == undefined || selectedTime == "undefined"
-      ? moment()
-      : selectedTime?.split(":");
+  const valueSelected =
+    selectedTime == undefined || selectedTime == "undefined";
 
-  const hh =
-    selectedTime == undefined || selectedTime == "undefined"
-      ? moment().format("hh")
-      : timeSplit[0];
-  const mm =
-    selectedTime == undefined || selectedTime == "undefined"
-      ? moment().format("mm")
-      : timeSplit[1];
+  const timeSplit = valueSelected ? moment() : selectedTime?.split(":");
+
+  const hh = valueSelected ? moment().format("hh") : timeSplit[0];
+  const mm = valueSelected ? moment().format("mm") : timeSplit[1];
 
   return (
     <>
@@ -55,8 +49,6 @@ const TimePicker = ({ getTimeData, width, time, value }) => {
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
         mode="time"
-        // time={selectedTime}
-        // valueData={value}
         isVisible={isDatePickerVisible}
         locale={"ko"}
         date={new Date(year, month, day, hh, mm)}

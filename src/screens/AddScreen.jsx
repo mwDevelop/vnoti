@@ -39,7 +39,6 @@ const AddScreen = ({ navigation, route }) => {
 
 const Wrap = styled(View)`
   width: 100%;
-
   padding: 0 3px;
   background-color: #f5f5f5;
 `;

@@ -3,7 +3,6 @@ import { View, SafeAreaView } from "react-native";
 import styled from "styled-components";
 import EditProfil from "../components/Profil/EditProfil";
 import { StatusBar } from "expo-status-bar";
-import theme from "../shared/theme";
 
 const EditScreen = ({ route }) => {
   const data = route.params.data;

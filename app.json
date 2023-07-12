@@ -4,7 +4,7 @@
   "expo": {
     "name": "브이노티",
     "slug": "ProjectHavita",
-    "version": "1.5.1",
+    "version": "1.5.4",
     "scheme": "vnoti",
     "orientation": "portrait",
     "icon": "./assets/IOS.png",
@@ -24,7 +24,7 @@
       "backgroundColor": "#FFFFFF",
       "bundleIdentifier": "kr.vnoti",
 
-      "buildNumber": "1.5.1",
+      "buildNumber": "1.5.4",
       "splash": {
         "image": "./assets/splash.png",
         "resizeMode": "contain",
@@ -39,7 +39,7 @@
     },
     "android": {
       "package": "kr.vnoti",
-      "versionCode": 15,
+      "versionCode": 17,
       "useNextNotificationsApi": true,
       "googleServicesFile": "./google-services.json",
       "config": {

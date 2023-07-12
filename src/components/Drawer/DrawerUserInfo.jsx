@@ -10,30 +10,23 @@ const DrawerUserInfo = ({}) => {
 
   useEffect(() => {}, [profile]);
 
+  const nameStyle = userName?.length < 5 ? "25px" : "20px";
+
   return (
     <View>
-      <UserInfo color={"#C1C1C1"} name={userName?.length < 5 ? "25px" : "20px"}>
+      <UserInfo color={"#C1C1C1"} name={nameStyle}>
         안녕하세요.
       </UserInfo>
 
       {profile == null ? (
-        <UserInfo
-          color={"#292929"}
-          name={userName?.length < 5 ? "25px" : "20px"}
-        >
+        <UserInfo color={"#292929"} name={nameStyle}>
           로그인을 해주세요!
         </UserInfo>
       ) : (
         profile && (
-          <UserInfo
-            color={"#292929"}
-            name={userName?.length < 5 ? "25px" : "20px"}
-          >
+          <UserInfo color={"#292929"} name={nameStyle}>
             {userName}
-            <UserInfo
-              color={"#C1C1C1"}
-              name={userName?.length < 5 ? "25px" : "20px"}
-            >
+            <UserInfo color={"#C1C1C1"} name={nameStyle}>
               님
             </UserInfo>
           </UserInfo>

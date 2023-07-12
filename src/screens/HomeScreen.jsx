@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   Platform,
   Image,
   Alert,
@@ -26,7 +25,7 @@ import Moment from "../elements/Moment";
 
 const HomeScreen = ({ navigation, route }) => {
   const { user, update, isLogin, send, setUpdate } = useContext(UserStore);
-  const [value, onChangeText] = useState(route?.params?.day);
+  const [value] = useState(route?.params?.day);
 
   let selectedDate = value == undefined ? moment() : value;
 
@@ -35,8 +34,8 @@ const HomeScreen = ({ navigation, route }) => {
   const [dateSelected, setDateSelected] = useState(selectedDate);
   const [todayList, setTodayList] = useState();
   const [noneClick, setNoneClick] = useState();
-  const [today, setToday] = useState();
-  const [modal, setModal] = useState();
+  const [, setToday] = useState();
+  const [modal, setModal] = useState(null);
   const [point, setPoint] = useState();
   const [content, setContent] = useState();
   const [fade, setFade] = useState(null);
@@ -45,28 +44,36 @@ const HomeScreen = ({ navigation, route }) => {
   const schedule_profile_id = user?.userProfileId;
   const schedule_date = moment(dateSelected)?.format("YYYY-MM-DD");
 
+  function getSchedule() {
+    apis
+      .getSchedule(schedule_profile_id, schedule_date)
+      .then((res) => {
+        const data = res.data.list;
+        const today = moment().format("YYYY-MM-DD");
+        const valueClick =
+          schedule_date == today
+            ? "today"
+            : schedule_date > today
+            ? "tomorrow"
+            : "yesterday";
+        if (res.data.result === "000") {
+          setTodayList(data);
+        } else {
+          setTodayList(false);
+        }
+        setNoneClick(valueClick);
+        navigation.setParams({ day: undefined });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   useEffect(() => {
     if (isLogin === true) {
-      apis
-        .getSchedule(schedule_profile_id, schedule_date)
-        .then((res) => {
-          const data = res.data.list;
-          setTodayList(data);
-          const today = moment().format("YYYY-MM-DD");
-          const valueClick =
-            schedule_date == today
-              ? "today"
-              : schedule_date > today
-              ? "tomorrow"
-              : "yesterday";
-          setNoneClick(valueClick);
-          navigation.setParams({ day: undefined });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      getSchedule();
     } else {
-      setTodayList();
+      setTodayList(false);
       setNoneClick(true);
     }
   }, [dateSelected, user, update, send]);
@@ -91,31 +98,46 @@ const HomeScreen = ({ navigation, route }) => {
 
   const getModalData = (e, open, value, fade) => {
     setModal(open);
-    setContent(value);
-    setPoint(e);
-    setFade(fade);
-  };
-
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  const fadeIn = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 5,
-      duration: 4000,
-      delay: 1000,
-      useNativeDriver: true,
-    }).start();
+    if (e === "로딩") {
+      setPoint("loading");
+    } else {
+      setContent(value);
+      setPoint(e);
+      setFade(fade);
+    }
   };
 
   const getFade = () => {
     setFadeModal(true);
-    fadeIn();
+  };
+
+  const numberStlye = (e, color) => {
+    const stlye = {
+      color: "#fff",
+      fontSize: Platform.OS === "ios" ? 18 : 15,
+    };
+
+    if (e === "marginTop") {
+      stlye.marginTop = 15;
+    }
+    if (color === "main") {
+      stlye.color = "#FF8A00";
+    }
+
+    return stlye;
   };
 
   return (
     <Container color={theme.MainColor}>
       <StatusBar style={theme.MainColor} />
-      <ProfilInfo navigation={navigation} />
+      <View
+        style={{
+          paddingTop: Platform.OS === "ios" ? 45 : 5,
+        }}
+      >
+        <ProfilInfo navigation={navigation} isLogin={isLogin} />
+      </View>
+
       {modal === "open" ? (
         <ModalBg>
           <Modal
@@ -129,31 +151,22 @@ const HomeScreen = ({ navigation, route }) => {
             setFadeModal={setFadeModal}
           />
         </ModalBg>
-      ) : (
+      ) : modal === null ? (
         ""
+      ) : (
+        <Modal point={"loading"} setModal={setModal} />
       )}
 
       {fade === "004" && fadeModal ? (
         <ModalBg>
-          <Animated.View
-            style={[
-              {
-                opacity: fadeAnim,
-                zIndex: 1000,
-                position: "relative",
-                top: "38%",
-              },
-            ]}
-          >
-            <Modal
-              point={point}
-              setModal={setModal}
-              content={"004"}
-              navigation={navigation}
-              fade={fade}
-              setFadeModal={setFadeModal}
-            />
-          </Animated.View>
+          <Modal
+            point={point}
+            setModal={setModal}
+            content={"004"}
+            navigation={navigation}
+            fade={fade}
+            setFadeModal={setFadeModal}
+          />
         </ModalBg>
       ) : (
         ""
@@ -189,25 +202,11 @@ const HomeScreen = ({ navigation, route }) => {
               marginBottom: 10,
             }}
             scrollerPaging={true}
-            dateNumberStyle={{
-              color: "#fff",
-              fontSize: Platform.OS == "ios" ? 18 : 15,
-              marginTop: 15,
-            }}
-            dateNameStyle={{
-              color: "#fff",
-              fontSize: Platform.OS == "ios" ? 18 : 15,
-            }}
+            dateNumberStyle={numberStlye("marginTop")}
+            dateNameStyle={numberStlye()}
             updateWeek={false}
-            highlightDateNameStyle={{
-              color: "#FF8A00",
-              fontSize: Platform.OS == "ios" ? 18 : 15,
-            }}
-            highlightDateNumberStyle={{
-              color: "#FF8A00",
-              marginTop: 15,
-              fontSize: Platform.OS == "ios" ? 18 : 15,
-            }}
+            highlightDateNameStyle={numberStlye("none", "main")}
+            highlightDateNumberStyle={numberStlye("marginTop", "main")}
             daySelectionAnimation={{
               type: "background",
               highlightColor: "#FFEDD9",
@@ -216,7 +215,6 @@ const HomeScreen = ({ navigation, route }) => {
             dayComponentHeight={70}
             selectedDate={dateSelected}
             onDateSelected={setDateSelected}
-            setSelectedDate={(date) => console.log(date)}
             calendarHeaderContainerStyle={{
               height: 0,
               position: "absolute",
@@ -237,7 +235,7 @@ const HomeScreen = ({ navigation, route }) => {
             </DayTitle>
           </DayTitleWrap>
           <View>
-            {todayList ? (
+            {todayList !== false ? (
               <ListWrap>
                 <View style={{ flex: 1 }}>
                   <ScrollView>
@@ -256,9 +254,14 @@ const HomeScreen = ({ navigation, route }) => {
                   </ScrollView>
                 </View>
               </ListWrap>
-            ) : todayList &&
-              todayList?.length === 0 &&
-              valueClick !== "yesterday" ? (
+            ) : noneClick === "yesterday" && todayList === false ? (
+              <ListWrap color={"#fff "}>
+                <LogoTitle color={"#AAAAAA"} size={"20px"} bloder={"500"}>
+                  {isLogin === null ? "" : "지난 날짜 스케줄이에요!"}
+                </LogoTitle>
+              </ListWrap>
+            ) : (todayList === false && noneClick !== "yesterday") ||
+              isLogin !== false ? (
               <ListWrap>
                 <Logo>
                   <HomeCalendar
@@ -279,10 +282,25 @@ const HomeScreen = ({ navigation, route }) => {
                 </Logo>
               </ListWrap>
             ) : (
-              <ListWrap color={"#fff "}>
-                <LogoTitle color={"#AAAAAA"} size={"20px"} bloder={"500"}>
-                  {"지난 날짜 스케줄이에요!"}
-                </LogoTitle>
+              <ListWrap>
+                <View style={{ flex: 1 }}>
+                  <ScrollView>
+                    {todayList?.map((item, k) => {
+                      return (
+                        <ScheduleList
+                          key={k}
+                          data={item}
+                          noneClick={noneClick === "today"}
+                          day={dateSelected}
+                          navigation={navigation}
+                          getModalData={getModalData}
+                          setModal={setModal}
+                          getLoadingData={getLoadingData}
+                        />
+                      );
+                    })}
+                  </ScrollView>
+                </View>
               </ListWrap>
             )}
           </View>
@@ -292,7 +310,7 @@ const HomeScreen = ({ navigation, route }) => {
   );
 };
 
-const Container = styled(SafeAreaView)`
+const Container = styled(View)`
   position: relative;
   background-color: ${(props) => props.color};
   height: 100%;

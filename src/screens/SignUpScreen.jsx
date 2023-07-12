@@ -7,6 +7,7 @@ import {
   TextInput,
   Alert,
   ScrollView,
+  SafeAreaView,
 } from "react-native";
 import Wrap from "../elements/wrap";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -16,8 +17,9 @@ import styled from "styled-components";
 import ProfilImg from "../components/ImagePicker/ProfilImg";
 import AgreeConditions from "../components/Login/AgreeConditions";
 import DatePicker from "../components/AddPill/DatePicker";
-import DropDownPicker from "react-native-dropdown-picker";
-import { AntDesign } from "@expo/vector-icons";
+
+import SelectBox2 from "../elements/SelectBox";
+import { SimpleLineIcons } from "@expo/vector-icons";
 
 const SignUpScreen = ({ navigation, route }) => {
   const { saveUserInfo, setProfile, setIsLogin } = useContext(UserStore);
@@ -170,14 +172,16 @@ const SignUpScreen = ({ navigation, route }) => {
   }
 
   return (
-    <>
+    <SafeAreaView style={{ backgroundColor: "#fff" }}>
       {agree == true ? (
         <AgreeConditions getData={getData} agree={agree} />
       ) : (
-        <ScrollView style={{ zIndex: -100 }}>
-          <Wrap>
-            <Title>건강한 습관{"\n"}함께해요.</Title>
-
+        <Wrap>
+          <Title>건강한 습관{"\n"}함께해요.</Title>
+          <ScrollView
+            style={{ zIndex: -100, backgroundColor: "#fff", paddingTop: 30 }}
+            showsVerticalScrollIndicator={false}
+          >
             <Container>
               <ProfilImg
                 url={photo}
@@ -207,7 +211,7 @@ const SignUpScreen = ({ navigation, route }) => {
             </ListWrap>
             <ListItem>이메일(선택)</ListItem>
             <ListWrap>
-              <EmailWrap style={{ zIndex: 2000 }}>
+              <EmailWrap>
                 <EmailInput
                   placeholder={"이메일"}
                   onChangeText={(e) => onChange("email", e)}
@@ -215,10 +219,19 @@ const SignUpScreen = ({ navigation, route }) => {
                   keyboardType="email-address"
                   maxLength={15}
                 />
-                <ListItem>@</ListItem>
+                <EailText>@</EailText>
 
                 {selectedCount == "directly" ? (
-                  <>
+                  <View
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      width: "50%",
+                      paddingRight: 15,
+                    }}
+                  >
                     <EmailInput
                       placeholder={"이메일"}
                       onChangeText={(e) => onChange("emailAdress", e)}
@@ -227,37 +240,22 @@ const SignUpScreen = ({ navigation, route }) => {
                       maxLength={13}
                     />
                     <TouchableOpacity onPress={() => emailTest()}>
-                      <AntDesign name="down" size={16} color="black" />
+                      <SimpleLineIcons
+                        name={"arrow-down"}
+                        size={17}
+                        color="black"
+                      />
                     </TouchableOpacity>
-                  </>
+                  </View>
                 ) : (
-                  <SelectEmail
-                    style={{ zIndex: 1000 }}
-                    placeholder={"선택해주세요"}
-                    open={openCountBox}
-                    value={selectedCount}
-                    items={emailOptions}
-                    setOpen={setOpenCountBox}
-                    setValue={setSelectedCount}
-                    setItems={setEmailOptions}
-                    containerStyle={{
-                      width: "51%",
-                    }}
-                    textStyle={{
-                      fontSize: 17,
-                    }}
-                    dropDownContainerStyle={{
-                      zIndex: 1000,
-                      borderColor: "#fff",
-                      background: "#fff",
-                      marginTop: 3,
-                      shadowColor: "#000",
-                      shadowOffset: { width: 2, height: 2 },
-                      shadowOpacity: 0.3,
-                      elevation: 7,
-                    }}
-                    placeholderStyle={{ fontSize: 17 }}
-                  />
+                  <View style={{ width: "50%", height: 30 }}>
+                    <SelectBox2
+                      data={emailOptions}
+                      placeholder={"선택해주세요"}
+                      setSelectedCount={setSelectedCount}
+                      top="50px"
+                    />
+                  </View>
                 )}
               </EmailWrap>
             </ListWrap>
@@ -293,24 +291,18 @@ const SignUpScreen = ({ navigation, route }) => {
             <Btn onPress={(e) => clickSignUp(deviceToken)} bgColor={"#FFB74D"}>
               <BtnTitle>완료</BtnTitle>
             </Btn>
-          </Wrap>
-        </ScrollView>
+          </ScrollView>
+        </Wrap>
       )}
-    </>
+    </SafeAreaView>
   );
 };
 
-const SelectEmail = styled(DropDownPicker)`
-  border: none;
-  border-radius: 10px;
-  font-size: 20px;
-  background-color: #fff;
-`;
-
 const EmailWrap = styled(View)`
-  display: flex;
   flex-direction: row;
   align-items: center;
+
+  width: 100%;
 `;
 
 const Title = styled(Text)`
@@ -323,12 +315,20 @@ const ListWrap = styled(View)`
   border-color: #ffb74d;
   border-bottom-width: 1px;
   margin-bottom: 15px;
+  width: 100%;
 `;
 
 const ListItem = styled(Text)`
   font-size: 18px;
   font-weight: 600;
   color: ${(props) => (props.red ? "#EF3F3F" : "#444444")};
+  margin-top: 10px;
+`;
+
+const EailText = styled(Text)`
+  font-size: 18px;
+  font-weight: 600;
+  color: "#444444";
 `;
 
 const Input = styled(TextInput)`

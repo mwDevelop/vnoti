@@ -49,11 +49,11 @@ const Subscriptions = ({ navigation, data }) => {
       <Wrap>
         {data?.profile_image == "undefined" || data?.profile_image == "null" ? (
           <UserImg
-            resizeMode="contain"
+            resizeMode="cover"
             source={require("../../../assets/images/Profil/profil_10.png")}
           />
         ) : (
-          <UserImg resizeMode="contain" source={{ uri: data?.profile_image }} />
+          <UserImg resizeMode="cover" source={{ uri: data?.profile_image }} />
         )}
 
         <Name>{data?.profile_name}</Name>

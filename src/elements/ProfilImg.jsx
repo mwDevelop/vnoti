@@ -1,19 +1,13 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Image } from "react-native";
 import styled from "styled-components";
 import "react-native-gesture-handler";
-import { UserStore } from "../context";
-import { useEffect } from "react";
 
-const ProfilImg = ({ size }) => {
-  const { user, profile, isLogin } = useContext(UserStore);
-
-  useEffect(() => {}, [user, profile, isLogin]);
-
+const ProfilImg = ({ size, url }) => {
   return (
     <>
-      {user?.userProfile !== null ? (
-        <Img size={size} source={{ uri: user?.userProfile }} />
+      {url !== "null" ? (
+        <Img size={size} source={{ uri: url }} />
       ) : (
         <Img
           size={size}

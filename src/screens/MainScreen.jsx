@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Alert,
   View,
+  Text,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import theme from "../shared/theme";
@@ -16,6 +17,7 @@ import { UserStore } from "../context";
 import apis from "../shared/apis";
 import moment from "moment/moment";
 import * as Analytics from "expo-firebase-analytics";
+import { getStatusBarHeight } from "react-native-status-bar-height";
 
 import Month from "../components/Month/Month";
 
@@ -29,7 +31,7 @@ const MainScreen = ({ navigation, route }) => {
     profile?.userProfileId == user?.userProfileId ? "main" : "member";
 
   useEffect(() => {
-    if (isLogin == true) {
+    if (isLogin) {
       setChanged(null);
       if (checkUser == "main") {
         const profile_id = profile?.userProfileId;
@@ -45,7 +47,7 @@ const MainScreen = ({ navigation, route }) => {
       } else if (checkUser == "member") {
         setChanged(null);
       }
-    } else if (!!!isLogin) {
+    } else if (isLogin === false) {
       setChanged(false);
     }
   }, [user, isLogin, update, send]);
@@ -76,40 +78,48 @@ const MainScreen = ({ navigation, route }) => {
   return (
     <Wrap>
       <StatusBar style={theme.MainColor} />
-      <ProfilInfo navigation={navigation} isLogin={isLogin} />
+      <View
+        style={{
+          paddingTop: Platform.OS === "ios" ? 45 : 5,
+          position: "relative",
+          height: "100%",
+        }}
+      >
+        <View style={{ height: Platform.OS === "ios" ? 75 : 100 }}>
+          <ProfilInfo navigation={navigation} isLogin={isLogin} />
+        </View>
 
-      <MothWrap>
-        <Month navigation={navigation} />
-      </MothWrap>
-
-      {changed == null ? (
-        ""
-      ) : changed ? (
-        <Btn onPress={checkJournal} disabled={changed}>
-          <Img source={require("../../assets/images/sun.png")} />
-        </Btn>
-      ) : (
-        <Btn onPress={checkJournal}>
-          <Img source={require("../../assets/images/moon.png")} />
-        </Btn>
-      )}
-
-      {/* <TouchableOpacity onPress={() => navigation.navigate("온보딩")}>
-        <Text>온보딩</Text>
-      </TouchableOpacity> */}
+        <MothWrap>
+          <Month navigation={navigation} />
+        </MothWrap>
+        {changed == null ? (
+          ""
+        ) : (
+          <Btn onPress={checkJournal} disabled={changed}>
+            <Img
+              source={
+                changed
+                  ? require("../../assets/images/sun.png")
+                  : require("../../assets/images/moon.png")
+              }
+            />
+          </Btn>
+        )}
+      </View>
     </Wrap>
   );
 };
 
-const Wrap = styled(SafeAreaView)`
+const Wrap = styled(View)`
   background-color: ${(props) => props.theme.MainColor};
   height: 100%;
+  position: relative;
 `;
 
 const Btn = styled(TouchableOpacity)`
   height: 65px;
   position: absolute;
-  bottom: 1%;
+  bottom: 30px;
   right: 2%;
 `;
 

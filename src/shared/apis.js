@@ -79,6 +79,9 @@ const apis = {
       apis.getHistoryType(type),
       apis.getHistory(today, today),
     ]),
+
+  getDrawerList: (id) =>
+    axios.all([apis.getShareList(id), apis.getSubscriptions()]),
 };
 
 export default apis;

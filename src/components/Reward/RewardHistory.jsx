@@ -5,7 +5,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import theme from "../../shared/theme";
 import moment from "moment";
 
-const RewardHistory = ({ history, navigation, beg, end }) => {
+const RewardHistory = ({ history, navigation, beg, end, isLogin }) => {
   const onPressOpen = () => {
     navigation.navigate("PeriodSetting");
   };
@@ -16,7 +16,7 @@ const RewardHistory = ({ history, navigation, beg, end }) => {
 
   return (
     <History>
-      <Top onPress={() => onPressOpen()}>
+      <Top onPress={() => onPressOpen()} dis>
         <Font color="#A7A7A7" size="15px" weight="600">
           전체{" "}
           <Font color="#A7A7A7" size="15px" weight="500">
@@ -27,10 +27,12 @@ const RewardHistory = ({ history, navigation, beg, end }) => {
 
       <SafeAreaView>
         <List>
-          <View style={{ flex: 1 }}>
-            <ScrollView>
-              {history &&
-                history.map((i, k) => {
+          {history == "null" ? (
+            ""
+          ) : (
+            <View style={{ flex: 1 }}>
+              <ScrollView>
+                {history?.map((i, k) => {
                   return (
                     <Item key={k}>
                       <View>
@@ -53,8 +55,9 @@ const RewardHistory = ({ history, navigation, beg, end }) => {
                     </Item>
                   );
                 })}
-            </ScrollView>
-          </View>
+              </ScrollView>
+            </View>
+          )}
         </List>
       </SafeAreaView>
     </History>
@@ -68,7 +71,6 @@ const History = styled(View)`
 
 const Top = styled(TouchableOpacity)`
   width: 100%;
-
   padding: 10px 20px;
   border-bottom-width: 1px;
   border-bottom-style: solid;

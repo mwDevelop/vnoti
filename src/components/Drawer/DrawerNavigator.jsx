@@ -10,7 +10,8 @@ import DrawerUserInfo from "./DrawerUserInfo";
 import { UserStore } from "../../context";
 import theme from "../../shared/theme";
 
-import MainUserProfile from "../../elements/MainUserProfile";
+import axios from "axios";
+import ProfilImg from "../../elements/ProfilImg";
 
 const DravwerNavigtor = ({ navigation }) => {
   const {
@@ -27,27 +28,17 @@ const DravwerNavigtor = ({ navigation }) => {
   const [subscriptions, setSubscriptions] = useState();
   const [subScribers, setSubScribers] = useState();
 
-  useEffect(() => {}, [navigation]);
-
   useEffect(() => {
-    if (!!!isLogin) {
+    if (isLogin) {
+      apis.getDrawerList(user?.userProfileId).then(
+        axios.spread((res1, res2) => {
+          setSubScribers(res1?.data?.list);
+          setSubscriptions(res2?.data?.list);
+        })
+      );
+    } else {
       setSubscriptions("");
       setSubScribers("");
-    } else if (user !== undefined || user !== null) {
-      apis.getShareList(user?.userProfileId).then((res) => {
-        if (res.data.result == "000") {
-          setSubScribers(res.data.list);
-        } else {
-          setSubScribers(null);
-        }
-      });
-      apis.getSubscriptions().then((res) => {
-        if (res.data.result == "000") {
-          setSubscriptions(res.data.list);
-        } else {
-          setSubscriptions(null);
-        }
-      });
     }
   }, [isLogin, user, profile, send, update]);
 
@@ -65,6 +56,7 @@ const DravwerNavigtor = ({ navigation }) => {
   };
 
   const name = profile?.userName;
+
   return (
     <>
       <Wrap>
@@ -98,9 +90,9 @@ const DravwerNavigtor = ({ navigation }) => {
 
             {isLogin ? (
               <TopWrap>
-                <MainUserProfile
+                <ProfilImg
                   size={name?.length < 5 ? "80px" : "70px"}
-                  // resizeMode="contain"
+                  url={profile?.userProfile}
                 />
                 <PageBtn
                   onPress={() => {
@@ -135,40 +127,22 @@ const DravwerNavigtor = ({ navigation }) => {
           navigation={navigation}
         />
       </Wrap>
-
-      {isLogin ? (
-        <LoginBtn
-          border={"#858585"}
-          onPress={logout}
-          size={Platform.OS == "ios" ? "60px" : "50px"}
-        >
-          <BtnText btnfont={"18px"} color={"#858585"}>
-            로그아웃
-          </BtnText>
-          <UserImg
-            resizeMode={"contain"}
-            source={require("../../../assets/images/login.png")}
-            name={"21px"}
-          />
-        </LoginBtn>
-      ) : (
-        <LoginBtn
-          border={"#000"}
-          onPress={() => {
-            navigation.navigate("로그인");
-          }}
-          size={Platform.OS == "ios" ? "60px" : "50px"}
-        >
-          <BtnText btnfont={"18px"} color="#858585">
-            로그인
-          </BtnText>
-          <UserImg
-            resizeMode={"contain"}
-            source={require("../../../assets/images/login.png")}
-            name={"21px"}
-          />
-        </LoginBtn>
-      )}
+      <LoginBtn
+        border={isLogin ? "#858585" : "#333"}
+        onPress={() => {
+          isLogin ? logout() : navigation.navigate("로그인");
+        }}
+        size={Platform.OS === "ios" ? "60px" : "50px"}
+      >
+        <BtnText btnfont={"18px"} color={"#858585"}>
+          {isLogin ? "로그아웃" : "로그인"}
+        </BtnText>
+        <UserImg
+          resizeMode={"contain"}
+          source={require("../../../assets/images/login.png")}
+          name={"21px"}
+        />
+      </LoginBtn>
     </>
   );
 };
@@ -182,7 +156,7 @@ const Wrap = styled(View)`
 
 const UserImg = styled(Image)`
   width: ${(props) => props.name};
-  height: ${(props) => props.name}; ;
+  height: ${(props) => props.name};
 `;
 
 const IconImg = styled(Image)`
@@ -234,6 +208,7 @@ const LoginBtn = styled(TouchableOpacity)`
   border-color: #efefef;
   padding-right: 5px;
   background-color: #fff;
+  z-index: 0;
 `;
 
 const TopWrap = styled(View)`

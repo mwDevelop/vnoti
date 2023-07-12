@@ -1,24 +1,40 @@
 import React, { useState, useContext } from "react";
+import { View, Dimensions, ScrollView, Alert } from "react-native";
 import {
-  Text,
-  View,
-  TouchableOpacity,
-  Dimensions,
-  TextInput,
-  Image,
-  ScrollView,
-  Alert,
-} from "react-native";
-import styled from "styled-components";
-import DropDownPicker from "react-native-dropdown-picker";
+  Flex,
+  Wrap,
+  Title,
+  Input,
+  Btn,
+  BtnText,
+  Container,
+  IconImg,
+  TitleWrap,
+  SaveBtn,
+} from "../Style/Pill";
 import apis from "../../shared/apis";
 import TimePicker from "../AddPill/TimePicker";
 import { UserStore } from "../../context";
 import theme from "../../shared/theme";
+import SelectBox from "../../elements/SelectBox";
 
-const EditPill = ({ navigation, editData, value }) => {
+const EditPill = ({ navigation, editData }) => {
   const subColor = `${theme.SubColor}`;
-  const { user, setAdd, add } = useContext(UserStore);
+  const { setAdd, add } = useContext(UserStore);
+  const windowHeight = Math.floor(Dimensions.get("window").height + 50);
+
+  const countOptions = [
+    { label: "알/정", value: "1" },
+    { label: "포", value: "2" },
+    { label: "스푼", value: "3" },
+  ];
+  const dayData = ["1", "2", "3"];
+
+  const guideData = [
+    { title: "식전", value: "1" },
+    { title: "식후", value: "2" },
+    { title: "상관없음", value: "3" },
+  ];
 
   // 약물 수정
   const [edit, setEdit] = useState({
@@ -41,13 +57,20 @@ const EditPill = ({ navigation, editData, value }) => {
     editType,
     editCycle,
     editGuide,
-    editDate,
     editTime,
-    editProfileId,
     editMedicineId,
   } = edit;
 
   const time = JSON.parse(editTime);
+
+  const [daySelected, setDaySeleted] = useState(time);
+  const [selectedGuide, setSeletedGuide] = useState(editGuide);
+  const [selectedCount, setSelectedCount] = useState();
+  const [seletedTime, setSelectedTime] = useState(editCycle);
+  const [cycleType, setCycleTpye] = useState(editType);
+  const [one, setOne] = useState(time[0]);
+  const [two, setTwo] = useState(time[1]);
+  const [three, setThree] = useState(time[2]);
 
   const onChangeEdit = (keyvalue, e) => {
     setEdit({
@@ -56,46 +79,9 @@ const EditPill = ({ navigation, editData, value }) => {
     });
   };
 
-  const [daySelected, setDaySeleted] = useState(time);
-
-  const windowHeight = Math.floor(Dimensions.get("window").height + 50);
-
-  //가이드
-
-  const [selectedGuide, setSeletedGuide] = useState(editGuide);
-  const [openCountBox, setOpenCountBox] = useState(false);
-  const [selectedCount, setSelectedCount] = useState();
-  const [countOptions, setCountOptions] = useState([
-    { label: "알/정", value: "1" },
-    { label: "포", value: "2" },
-    { label: "스푼", value: "3" },
-  ]);
-
-  const [seletedTime, setSelectedTime] = useState(editCycle);
-  const [timeSelected, setTimeSeleted] = useState(false);
-
-  const dayData = ["1", "2", "3"];
-
-  const guideData = [
-    { title: "식전", value: "1" },
-    { title: "식후", value: "2" },
-    { title: "상관없음", value: "3" },
-  ];
-  const testData = [{ title: "일일횟수", value: "1" }];
-
-  const [cycleType, setCycleTpye] = useState(editType);
-
   const onPresSelectedGuide = (e) => {
     setSeletedGuide(e);
   };
-
-  const onPresSelecteType = (e) => {
-    setCycleTpye(e);
-  };
-
-  // 자식 => 부모 (시간,날짜 DATA)
-
-  const [timeData, setTimeData] = useState();
 
   const onPressTitle = (i) => {
     const dayArray = Array.from({ length: i }, (now) => now);
@@ -110,10 +96,6 @@ const EditPill = ({ navigation, editData, value }) => {
       setThree();
     }
   };
-
-  const [one, setOne] = useState(time[0]);
-  const [two, setTwo] = useState(time[1]);
-  const [three, setThree] = useState(time[2]);
 
   const getTimeData = (timeData, value, daySelected) => {
     if (value == 1) {
@@ -188,37 +170,14 @@ const EditPill = ({ navigation, editData, value }) => {
             onChangeText={(e) => onChangeEdit("editDose", e)}
             keyboardType="number-pad"
           />
-
-          <SelectBox
-            style={{ zIndex: 1000 }}
-            placeholder={countOptions[editShape - 1]?.label}
-            open={openCountBox}
-            value={selectedCount}
-            items={countOptions}
-            setOpen={setOpenCountBox}
-            setValue={setSelectedCount}
-            setItems={setCountOptions}
-            containerStyle={{
-              width: "48%",
-              shadowColor: openCountBox == true ? "#3d3d3d" : "#fff",
-              shadowOffset:
-                openCountBox == true
-                  ? { width: 3, height: 3 }
-                  : { width: 0, height: 0 },
-              shadowOpacity: openCountBox == true ? 0.2 : 0,
-            }}
-            textStyle={{
-              fontSize: 17,
-            }}
-            dropDownContainerStyle={{
-              zIndex: 1000,
-              borderColor: "#ffffff",
-              backgroundColor: "#ffffff",
-              paddingLeft: "5%",
-              paddingRight: "5%",
-            }}
-            placeholderStyle={{ fontSize: 17 }}
-          />
+          <View style={{ width: "48%", height: 60 }}>
+            <SelectBox
+              data={countOptions}
+              setSelectedCount={setSelectedCount}
+              placeholder={countOptions[editShape - 1]?.label}
+              top={"65px"}
+            />
+          </View>
         </Container>
         <TitleWrap>
           <Title>일일 횟수/시간</Title>
@@ -250,14 +209,9 @@ const EditPill = ({ navigation, editData, value }) => {
         ) : (
           ""
         )}
-        {cycleType == 1 ? (
+        {
           <>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
+            <Flex>
               {daySelected?.map((i, k) => {
                 return (
                   <TimePicker
@@ -271,43 +225,9 @@ const EditPill = ({ navigation, editData, value }) => {
                   />
                 );
               })}
-            </View>
+            </Flex>
           </>
-        ) : (
-          ""
-        )}
-
-        {cycleType == 2 ? (
-          <Container direction="row" style={{ zIndex: 2000 }}>
-            <TimePicker
-              width="35%"
-              timeData={timeData}
-              getTimeData={getTimeData}
-              data={dayArray}
-            />
-            <SelectBox
-              placeholder={`${editCycle} 시간마다`}
-              open={timeSelected}
-              value={seletedTime}
-              items={timeOptions}
-              setOpen={setTimeSeleted}
-              setValue={setSelectedTime}
-              setItems={setTimeOptions}
-              containerStyle={{
-                width: "62%",
-              }}
-              labelStyle={{ fontSize: 16 }}
-              dropDownContainerStyle={{
-                zIndex: 1000,
-                borderColor: "#fff",
-                backgroundColor: "#fff",
-                marginTop: "3%",
-              }}
-            />
-          </Container>
-        ) : (
-          ""
-        )}
+        }
 
         <Title>섭취 방법</Title>
         <Container direction="row">
@@ -338,95 +258,4 @@ const EditPill = ({ navigation, editData, value }) => {
   );
 };
 
-const Wrap = styled(View)`
-  width: 100%;
-  height: ${(props) => props.windowHeight};
-  padding: 0px 20px;
-  z-index: -100;
-  background-color: #f5f5f5;
-  margin-bottom: 50px;
-`;
-
-const Title = styled(Text)`
-  font-size: 23px;
-  font-weight: 600;
-  color: #444;
-  margin: 15px 0;
-`;
-
-const Input = styled(TextInput)`
-  height: ${(props) => props.height};
-  width: ${(props) => props.width};
-  border-radius: 10px;
-  font-size: 20px;
-  background-color: #fff;
-  margin-bottom: 10px;
-  padding: 10px 15px;
-`;
-
-const Btn = styled(TouchableOpacity)`
-  width: ${(props) => props.width};
-  height: 60px;
-  border-radius: 10px;
-  font-size: 20px;
-  background-color: ${(props) => (props.color ? props.color : "#ffffff")};
-  border: ${(props) => (props.change ? "1px solid #FFAB48" : "#fff")};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-`;
-
-const SaveBtn = styled(TouchableOpacity)`
-  width: ${(props) => props.width};
-  height: 60px;
-  border-radius: 10px;
-  font-size: 20px;
-  background-color: ${(props) => (props.color ? props.color : "#ffffff")};
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 20px 0;
-`;
-
-const BtnText = styled(Text)`
-  font-size: 20px;
-  font-weight: ${(props) => (props.weight ? props.weight : "0")};
-  color: ${(props) => props.color};
-  text-align: center;
-`;
-
-const Container = styled(View)`
-  width: 100%;
-  display: flex;
-  flex-direction: ${(props) => props.direction};
-
-  justify-content: space-between;
-  align-items: center;
-  align-content: center;
-`;
-
-const SelectBox = styled(DropDownPicker)`
-  border: none;
-  height: 60px;
-  text-align: center;
-  border-radius: 10px;
-  font-size: 20px;
-  background-color: #fff;
-  margin-bottom: 10px;
-  padding: 0px 15px;
-`;
-
-const IconImg = styled(Image)`
-  width: 18px;
-  height: 18px;
-  margin-left: 10px;
-`;
-
-const TitleWrap = styled(View)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
 export default EditPill;

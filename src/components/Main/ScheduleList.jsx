@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
-import { View, TouchableOpacity, Text, Image, Alert } from "react-native";
+import { View, TouchableOpacity, Text, Image } from "react-native";
 import styled from "styled-components";
 import moment from "moment/moment";
 import { useState } from "react";
 import apis from "../../shared/apis";
+import { PillGuideline, PillShape } from "../Function/Pill";
 
-const ScheduleList = ({ data, noneClick, getModalData }) => {
+const ScheduleList = ({ data, noneClick, getModalData, getLoadingData }) => {
   const timeA = moment(data?.schedule_dt).format("a ");
   const time = moment(data?.schedule_dt).format("hh:mm ");
   const medicineData = JSON.parse(data?.schedule_medicine);
-  const guideline = medicineData?.medicine_guideline;
   const dose = medicineData?.medicine_dose;
   const shape = medicineData?.medicine_shape;
 
@@ -20,36 +20,25 @@ const ScheduleList = ({ data, noneClick, getModalData }) => {
     setConfirm(data.schedule_confirm);
   }, [data]);
 
-  // const onPressConfirm = (e) => {
-  //   setConfirm(e);
-
-  //   const data = {
-  //     schedule_confirm: e,
-  //     point_yn: "y",
-  //   };
-
-  //   apis.postSchedule(schedule_id, data).then((res) => {
-  //     const data = res.data.data;
-  //     const value = e === 1 ? "오늘 복용 완료!" : "복용이 취소되었습니다.";
-  //     if (res.data.result === "004") {
-  //       getModalData(0, "open", value, "004");
-  //     } else {
-  //       getModalData(data?.get_point, "open", value, null);
-  //     }
-  //   });
-  // };
-
   const onPressConfirm = (e) => {
     setConfirm(e);
-    {
-      e == "1"
-        ? Alert.alert("복용 완료하였습니다!")
-        : Alert.alert("복용 완료가 취소되었습니다.");
-    }
+
     const data = {
       schedule_confirm: e,
+      point_yn: "y",
     };
-    apis.postSchedule(schedule_id, data).then((res) => {});
+    if (e === 1) {
+      getModalData("로딩");
+    }
+    apis.postSchedule(schedule_id, data).then((res) => {
+      const data = res.data.data;
+      const value = e === 1 ? "오늘 복용 완료!" : "복용이 취소되었습니다.";
+      if (res.data.result === "004") {
+        getModalData(0, "open", value, "004");
+      } else {
+        getModalData(data?.get_point, "open", value, null);
+      }
+    });
   };
 
   return (
@@ -99,9 +88,8 @@ const ScheduleList = ({ data, noneClick, getModalData }) => {
           <InfoWrap>
             <Pill>{medicineData.medicine_name}</Pill>
             <Pill>
-              {guideline === 1 ? "식전 " : guideline === 2 ? "식후 " : ""}
-              {dose}
-              {shape === 1 ? "알" : shape === 2 ? "포" : "스푼"} 복용
+              {PillGuideline(medicineData?.medicine_guideline)} {dose}
+              {PillShape(shape)} 복용
             </Pill>
           </InfoWrap>
         </PillInfo>

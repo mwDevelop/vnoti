@@ -14,6 +14,7 @@ const RewardLists = ({
   update,
   getModalData,
   today,
+  isLogin,
 }) => {
   const isRegPoint = checked?.checked;
   const [value, setValue] = useState(false);
@@ -24,8 +25,12 @@ const RewardLists = ({
     } else {
       apis.getAttend().then((res) => {
         const data = res.data.data;
-        getModalData(isRegPoint, data?.get_point);
-        setUpdate(update + 1);
+        if (res.data.result === "004") {
+          getModalData(0, "open", value, "004");
+        } else {
+          getModalData(isRegPoint, data?.get_point);
+          setUpdate(update + 1);
+        }
       });
     }
 
@@ -36,7 +41,7 @@ const RewardLists = ({
 
   const onPressUsePoint = () => {
     const result = cryptoJs();
-    Linking.openURL(`http://211.37.174.67:3000/Login/Vnoti?vcode=${result}`);
+    Linking.openURL(`https://alldeal.kr/Login/Vnoti?vcode=${result}`);
   };
 
   return (
@@ -51,7 +56,7 @@ const RewardLists = ({
             포인트
           </Title>
           <Bold color="#444">
-            {!sumPoint ? 0 : sumPoint}
+            {!sumPoint ? 0 : Number(sumPoint).toLocaleString()}
             <Bold color="#444" size="22px">
               P
             </Bold>
@@ -74,12 +79,12 @@ const RewardLists = ({
           </Bold>{" "}
           받은 포인트{" "}
           <Bold color={theme.MainColor} size="16px">
-            {today}p
+            {!today ? 0 : today}p
           </Bold>
         </Text>
       </TodayWrap>
       <BtnWrap>
-        <Btn onPress={() => onPressAttend()}>
+        <Btn onPress={() => onPressAttend()} disabled={!isLogin}>
           <Title color={isRegPoint ? "#B8B8B8" : "#444444"}>
             {isRegPoint ? "출석체크완료" : "출석체크하기"}
           </Title>
@@ -100,7 +105,7 @@ const Display = styled(View)`
 
 const Container = styled(View)`
   width: 100%;
-  height: 38%;
+
   background-color: #fff;
   padding: 25px 15px;
 `;

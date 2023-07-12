@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Text, Image, TouchableOpacity, Alert, View } from "react-native";
-import Wrap from "../../elements/wrap";
+
 import styled from "styled-components";
 import apis from "../../shared/apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,6 +20,7 @@ const AuthCheck = ({ navigation, route }) => {
       mb_cellphone: userPhoneNum,
       mb_device_token: expoPushToken,
     };
+
     await apis.postLogin(userData).then((response) => {
       if (response.data.result == "000") {
         const member = response?.data;
@@ -28,7 +29,7 @@ const AuthCheck = ({ navigation, route }) => {
         const profile_id = member?.user?.mb_profile_id;
         axios({
           method: "GET",
-          url: `http://vnoti.co.kr/api/profile/${profile_id}`,
+          url: `http://vnoti.kr/api/profile/${profile_id}`,
           headers: {
             Authorization: `${loginUserToken}`,
           },
@@ -48,6 +49,7 @@ const AuthCheck = ({ navigation, route }) => {
                 userGender: `${member?.user?.mb_gender}`,
                 userProfile: `${data?.profile_image}`,
               };
+
               AsyncStorage.setItem("main_user", JSON.stringify(userInfo));
               AsyncStorage.setItem("userToken", loginUserToken);
 

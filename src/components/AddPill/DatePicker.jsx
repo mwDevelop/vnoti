@@ -39,7 +39,7 @@ const DatePicker = ({ getDateDate, data, size, paddingSize }) => {
           )}`}</BtnText>
         ) : first ? (
           <BtnText color={"#000"} size={size}>
-            {data == "null" || data == "0000-00-00"
+            {data === "null" || data === "0000-00-00"
               ? "날짜를 선택해주세요!"
               : data}
           </BtnText>

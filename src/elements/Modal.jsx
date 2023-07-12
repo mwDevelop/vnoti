@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Image, View, Text, TouchableOpacity } from "react-native";
+import { Image, View, Text, TouchableOpacity, Platform } from "react-native";
 
 const Modal = ({
   point,
@@ -11,7 +11,6 @@ const Modal = ({
   getFade,
   fade,
   setFadeModal,
-  fadeIn,
 }) => {
   const onPressMove = () => {
     setModal(false);
@@ -20,86 +19,102 @@ const Modal = ({
 
   const onPressCheck = () => {
     if (fade === "004") {
-      setModal(false);
+      setModal(null);
       getFade();
     } else {
-      setModal(false);
+      setModal(null);
     }
   };
 
   const onPressClose = () => {
     setFadeModal(false);
-    setModal(false);
+    setModal(null);
   };
 
   return (
     <ModalBg>
-      <Container>
-        <Flex>
-          <Img
-            size={content === "004" ? "80px" : "60px"}
-            height={content === "004" ? "90px" : "60px"}
-            resizeMode="contain"
-            dsfsdfds
-            source={
-              content === "004"
-                ? require("../../assets/images/Profil/point.png")
-                : require("../../assets/images/Profil/smile.png")
-            }
-          />
-
-          {content === "004" ? (
+      {point === "loading" ? (
+        <Container top={"40%"}>
+          <Flex>
             <>
+              <Gif
+                source={require("../../assets/images/loading.gif")}
+                resizeMode="contain"
+              />
+
               <Span size="20px" weight="600" color="#333">
-                100P 다 채우셨네요!
-              </Span>
-              <Span size="12px" weight="400" color="#959595">
-                (지급된 리워드는 리워드 탭에서 확인 할 수 있어요.)
+                포인트 지급 중...
               </Span>
             </>
-          ) : point === 0 || value === true ? (
-            <Span size="20px" weight="600" color="#333">
-              {content}
-            </Span>
-          ) : (
-            <>
+          </Flex>
+        </Container>
+      ) : (
+        <Container top={Platform.OS === "ios" ? "40%" : "38%"}>
+          <Flex>
+            <Img
+              size={content === "004" ? "85px" : "60px"}
+              height={content === "004" ? "85px" : "60px"}
+              resizeMode="contain"
+              source={
+                content == "004"
+                  ? require("../../assets/images/Profil/point.gif")
+                  : require("../../assets/images/Profil/smile.png")
+              }
+            />
+
+            {content === "004" ? (
+              <>
+                <Span size="20px" weight="600" color="#333">
+                  100P 다 채우셨네요!
+                </Span>
+                <Span size="12px" weight="400" color="#959595">
+                  (지급된 포인트는 리워드 탭에서 확인 할 수 있어요.)
+                </Span>
+              </>
+            ) : point === 0 || value === true ? (
               <Span size="20px" weight="600" color="#333">
                 {content}
               </Span>
-              <Span size="18px" weight="600" color="#333">
-                <Span size="18px" weight="500" color="#ee4343">
-                  {point}P{" "}
+            ) : (
+              <>
+                <Span size="20px" weight="600" color="#333">
+                  {content}
                 </Span>
-                지급완료되었습니다.
-              </Span>
+                <Span size="18px" weight="600" color="#333">
+                  <Span size="18px" weight="500" color="#ee4343">
+                    {point}P{" "}
+                  </Span>
+                  지급완료되었습니다.
+                </Span>
 
-              <Span size="12px" weight="400" color="#959595">
-                (지급된 리워드는 리워드 탭에서 확인 할 수 있어요.)
+                <Span size="12px" weight="400" color="#959595">
+                  (지급된 리워드는 리워드 탭에서 확인 할 수 있어요.)
+                </Span>
+              </>
+            )}
+          </Flex>
+          {content === "004" ? (
+            <BtnWrap>
+              <Btn onPress={() => onPressClose()} width="48%" color="#aaa">
+                <Span size="18px" weight="600" color="#fff">
+                  닫기
+                </Span>
+              </Btn>
+              <Btn onPress={() => onPressMove()} width="48%">
+                <Span size="18px" weight="600" color="#fff">
+                  확인하러 가기
+                </Span>
+              </Btn>
+            </BtnWrap>
+          ) : (
+            <Btn onPress={() => onPressCheck()} width="100%">
+              <Span size="18px" weight="600" color="#fff">
+                확인
               </Span>
-            </>
+            </Btn>
           )}
-        </Flex>
-        {content === "004" ? (
-          <BtnWrap>
-            <Btn onPress={() => onPressClose()} width="48%" color="#aaa">
-              <Span size="18px" weight="600" color="#fff">
-                닫기
-              </Span>
-            </Btn>
-            <Btn onPress={() => onPressMove()} width="48%">
-              <Span size="18px" weight="600" color="#fff">
-                확인하러 가기
-              </Span>
-            </Btn>
-          </BtnWrap>
-        ) : (
-          <Btn onPress={() => onPressCheck()} width="100%">
-            <Span size="18px" weight="600" color="#fff">
-              확인
-            </Span>
-          </Btn>
-        )}
-      </Container>
+        </Container>
+      )}
     </ModalBg>
   );
 };
@@ -110,7 +125,7 @@ const Container = styled(View)`
   background: #fff;
 
   position: absolute;
-  top: 40%;
+  top: ${(props) => props.top};
   left: 10%;
   padding: 30px 15px;
 
@@ -167,6 +182,10 @@ const Span = styled(Text)`
   color: ${(props) => props.color};
   font-weight: ${(props) => props.weight};
   line-height: 25px;
+`;
+
+const Gif = styled(Image)`
+  width: 100px;
 `;
 
 export default Modal;

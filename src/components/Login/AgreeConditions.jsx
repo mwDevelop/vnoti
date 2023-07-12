@@ -14,7 +14,7 @@ import { AntDesign } from "@expo/vector-icons";
 
 import styled from "styled-components";
 
-const AgreeConditions = ({ navigation, getData, agree }) => {
+const AgreeConditions = ({ getData }) => {
   const data = [
     {
       id: 0,
@@ -84,6 +84,8 @@ const AgreeConditions = ({ navigation, getData, agree }) => {
     setShowAppOptions(!showAppOptions);
   };
 
+  const btnColor = checkOption >= 3 || requiredOption == true;
+
   return (
     <Wrap>
       <Logo
@@ -128,7 +130,7 @@ const AgreeConditions = ({ navigation, getData, agree }) => {
                 <CheckTitle>{i.title}</CheckTitle>
 
                 <Modal
-                  visible={num == i.id ? showAppOptions : ""}
+                  visible={num === i.id ? showAppOptions : ""}
                   animationType="slide"
                   onRequestClose={() => setShowAppOptions(false)}
                 >
@@ -153,33 +155,24 @@ const AgreeConditions = ({ navigation, getData, agree }) => {
                   </ModalWrap>
                 </Modal>
 
-                {checkedItems.includes(i.id) ? (
-                  <BtnIcon
-                    resizeMode="contain"
-                    source={require("../../../assets/images/checkcircle_O.png")}
-                  />
-                ) : (
-                  <BtnIcon
-                    resizeMode="contain"
-                    source={require("../../../assets/images/checkcircle_G.png")}
-                  />
-                )}
+                <BtnIcon
+                  resizeMode="contain"
+                  source={
+                    checkedItems.includes(i.id)
+                      ? require("../../../assets/images/checkcircle_O.png")
+                      : require("../../../assets/images/checkcircle_G.png")
+                  }
+                />
               </Btn>
             );
           })}
         </CheckList>
         <Btn
-          color={
-            checkOption >= 3 || requiredOption == true ? "#FFAB48" : "#F2F2F2"
-          }
+          color={btnColor ? "#FFAB48" : "#F2F2F2"}
           height={"50px"}
           onPress={(e) => onClick(checkOption)}
         >
-          <StartTitle
-            color={
-              checkOption >= 3 || requiredOption == true ? "#fff" : "#C3C3C3"
-            }
-          >
+          <StartTitle color={btnColor ? "#fff" : "#C3C3C3"}>
             시작하기
           </StartTitle>
         </Btn>

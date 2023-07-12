@@ -35,7 +35,9 @@ const OnboardingScreen = ({ navigation }) => {
         showsPagination={true}
         activeDotColor={theme.MainColor}
         loop={false}
-        onIndexChanged={(index) => setPageIndex(index)}
+        onIndexChanged={(index) => {
+          setPageIndex(index);
+        }}
       >
         {data.map((i, k) => {
           return (
@@ -56,11 +58,11 @@ const OnboardingScreen = ({ navigation }) => {
       </SkipBtn>
 
       <Btn
-        color={pageIndex == "2" ? "#ffab48" : "#D3D3D3 "}
+        color={pageIndex === 2 ? "#ffab48" : "#D3D3D3 "}
         onPress={() =>
           navigation.reset({ routes: [{ name: "MainNavigation" }] })
         }
-        disabled={pageIndex == "2" ? false : true}
+        disabled={pageIndex === 2 ? false : true}
       >
         <BtnTitle>시작하기</BtnTitle>
       </Btn>

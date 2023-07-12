@@ -14,6 +14,7 @@ import apis from "../../shared/apis";
 import styled from "styled-components";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { UserStore } from "../../context";
+import { PillShape, PillGuideline } from "../Function/Pill";
 
 import theme from "../../shared/theme";
 
@@ -108,6 +109,7 @@ const MyPillItem = ({ navigation, setCountPill }) => {
         {pillData &&
           pillData?.map((i, k) => {
             const time = JSON.parse(i.medicine_time);
+            const shape = i?.medicine_shape;
             return (
               <View
                 key={k}
@@ -161,9 +163,9 @@ const MyPillItem = ({ navigation, setCountPill }) => {
                             >
                               <Icon
                                 source={
-                                  i?.medicine_shape == 1
+                                  shape == 1
                                     ? require("../../../assets/images/pill_icon_01.png")
-                                    : i?.medicine_shape == 2
+                                    : shape == 2
                                     ? require("../../../assets/images/pill_icon_03.png")
                                     : require("../../../assets/images/pill_icon_02.png")
                                 }
@@ -186,18 +188,9 @@ const MyPillItem = ({ navigation, setCountPill }) => {
                               <Sub>
                                 <SubTitle>섭취방법</SubTitle>
                                 <Info>
-                                  {i.medicine_guideline == 1
-                                    ? "식전 "
-                                    : i.medicine_guideline == 2
-                                    ? "식후 "
-                                    : ""}
+                                  {PillGuideline(i.medicine_guideline)}
                                   {i.medicine_dose}
-                                  {i.medicine_shape == 1
-                                    ? "알(정)"
-                                    : i.medicine_shape == 2
-                                    ? "포"
-                                    : "스푼"}{" "}
-                                  복용
+                                  {PillShape(shape)} 복용
                                 </Info>
                               </Sub>
                             </TextWrap>
@@ -416,8 +409,7 @@ const ListTitle = styled(Text)`
 
 const ListWrap = styled(View)`
   width: 100%;
-  height: 80%;
-  margin: auto;
+  height: 60%;
   display: flex;
   align-items: center;
   justify-content: center;

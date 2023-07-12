@@ -93,54 +93,6 @@ const LoginScreen = ({ navigation }) => {
   }, []);
 
   return (
-    // <View style={styles.container}>
-    //   <ImgWrap>
-    //     <Image
-    //       style={styles.img}
-    //       source={require("../../assets/images/logo_logoName.png")}
-    //       resizeMode="contain"
-    //     />
-    //     {/* <Image
-    //         style={styles.logoName}
-    //         source={require("../../assets/images/logoName.png")}
-    //         resizeMode="contain"
-    //       /> */}
-    //   </ImgWrap>
-    //   <View style={styles.wrap}>
-    //     <Btn
-    //       bgColor={theme.SubColor}
-    //       onPress={() =>
-    //         navigation.navigate("Phone", { deviceToken: deviceToken })
-    //       }
-    //       style={{ width: Dimensions.get("window").width - 40 }}
-    //     >
-    //       <BtnTitle font="#fffff">
-    //         <TitleBlod>휴대폰 번호</TitleBlod>로 시작
-    //       </BtnTitle>
-    //     </Btn>
-    //     <TouchableOpacity
-    //       onPress={() =>
-    //         navigation.navigate("KakaoLogin", { deviceToken: deviceToken })
-    //       }
-    //     >
-    //       <Image
-    //         source={require("../../assets/images/kakao_login.png")}
-    //         resizeMode="contain"
-    //         style={{
-    //           width: Dimensions.get("window").width - 40,
-    //           height: 60,
-    //           padding: 10,
-    //         }}
-    //       />
-    //     </TouchableOpacity>
-    //     {/* <Btn
-    //       bgColor={"#000"}
-    //       style={{ width: Dimensions.get("window").width - 40 }}
-    //     >
-    //       <BtnTitle>Apple로 시작</BtnTitle>
-    //     </Btn> */}
-    //   </View>
-    // </View>
     <Wrap>
       <Container>
         <ImgWrap>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import moment from "moment/moment";
 import {
   View,
@@ -18,9 +18,11 @@ const Month = ({ navigation }) => {
   const [getMoment, setMoment] = useState(moment());
   const [marked, setMarked] = useState([]);
 
-  const startDate = moment().subtract(2, "months").format("YYYY-MM");
+  const startDate = moment().subtract(1, "months").format("YYYY-MM");
 
   const weekList = ["일", "월", "화", "수", "목", "금", "토"];
+
+  // const getMarkedData = useMemo(() =>)
 
   useEffect(() => {
     if (isLogin == false) {
@@ -55,10 +57,16 @@ const Month = ({ navigation }) => {
   }, [send, user, isLogin, getMoment]);
 
   const onPressSchedule = (days) => {
-    navigation.navigate("스케줄", {
-      day: days,
-      click: moment().format("YYYY-MM-DD") > days.format("YYYY-MM-DD"),
-    });
+    const start = moment().subtract(1, "months").format("YYYY-MM-DD");
+    const end = moment().add(30, "d").format("YYYY-MM-DD");
+    const selectedDay = days.format("YYYY-MM-DD");
+
+    if (moment(selectedDay).isBetween(start, end)) {
+      navigation.navigate("스케줄", {
+        day: days,
+        click: days.format("YYYY-MM-DD"),
+      });
+    }
   };
 
   let arry = [];

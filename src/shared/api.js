@@ -2,13 +2,13 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const api = axios.create({
-  // baseURL: "http://vnoti.kr",
-  baseURL: "http://vnoti.co.kr",
+  baseURL: "http://vnoti.kr",
+  // baseURL: "http://vnoti.co.kr",
 });
 
 export const instance = axios.create({
-  // baseURL: "http://vnoti.kr",
-  baseURL: "http://vnoti.co.kr",
+  baseURL: "http://vnoti.kr",
+  // baseURL: "http://vnoti.co.kr",
 });
 
 instance.interceptors.request.use(
@@ -18,6 +18,7 @@ instance.interceptors.request.use(
     return config;
   },
   (err) => {
+    console.log("err", err);
     return Promise.reject(err);
   }
 );
@@ -27,6 +28,7 @@ instance.interceptors.response.use(
     return config;
   },
   (err) => {
+    console.log(err);
     return Promise.reject(err);
   }
 );

@@ -8,7 +8,6 @@ import {
   Dimensions,
   SafeAreaView,
   Alert,
-  Modal,
 } from "react-native";
 import styled from "styled-components";
 import Subscriptions from "./Subscriptions";
@@ -16,7 +15,13 @@ import SubScribers from "./SubScribers";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserStore } from "../../context";
 
-const MemberList = ({ navigation, subscriptions, subScribers }) => {
+const MemberList = ({
+  navigation,
+  subscriptions,
+  subScribers,
+  setModal,
+  setContent,
+}) => {
   const { setUser, isLogin, send, setSend, update, setUpdate } =
     useContext(UserStore);
   const Height = Dimensions.get("window").height;
@@ -206,7 +211,7 @@ const TitleWrap = styled(View)`
 const Title = styled(Text)`
   font-size: ${(props) => props.titleSize};
   color: ${(props) => props.color};
-  margin: ${(props) => props.center}; ;
+  margin: ${(props) => props.center};
 `;
 
 const Bolder = styled(Text)`

@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import { Text, View, SafeAreaView } from "react-native";
+import { Text, View, Image } from "react-native";
 import styled from "styled-components";
 import { StatusBar } from "expo-status-bar";
-import ProfilInfo from "../components/Main/ProfilInfo";
+
 import theme from "../shared/theme";
 import moment from "moment";
 
@@ -15,13 +15,17 @@ import axios from "axios";
 import CryptoJS from "react-native-crypto-js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "../elements/Modal";
+import { Platform } from "react-native";
+import ProfilInfo from "../components/Main/ProfilInfo";
+
 const RewardScreen = ({ navigation, route }) => {
-  const { isLogin, user } = useContext(UserStore);
+  const { isLogin, user, profile } = useContext(UserStore);
+
   const data = route.params;
   const today = moment().format("YYYY-MM-DD");
   const weekAgo = moment(today).subtract("1", "w").format("YYYY-MM-DD");
 
-  const [history, setHistory] = useState();
+  const [history, setHistory] = useState(null);
   const [period, setPeriod] = useState();
   const [checked, setChecked] = useState();
   const [attend, setAttend] = useState();
@@ -30,13 +34,14 @@ const RewardScreen = ({ navigation, route }) => {
   const [modal, setModal] = useState(false);
   const [pressAttend, setPressAttend] = useState();
   const [point, setPoint] = useState();
+  const [userPoint, setUserPoint] = useState(0);
   const [todayPoint, setTodayPoint] = useState();
 
   function cryptoJs() {
     let data = {
       id: user.userId,
       name: user.userName,
-      point: sumPoint,
+      point: sumPoint(),
       cellphone: user.userPhoneNum.replace(
         /^(\d{2,3})(\d{3,4})(\d{4})$/,
         `$1-$2-$3`
@@ -69,9 +74,18 @@ const RewardScreen = ({ navigation, route }) => {
   }, [data]);
 
   useEffect(() => {
+    apis.getUserInfo(profile?.userId).then((res) => {
+      const data = res.data.data;
+      setUserPoint(data.mb_point);
+    });
+
     apis.getReward(1, weekAgo, today, today).then(
       axios.spread((res1, res2, res3, res4) => {
-        setHistory(res1.data.list);
+        if (res1.data.result === "000") {
+          setHistory(res1.data.list);
+        } else {
+          setHistory("none");
+        }
         setChecked(res2.data.data);
         setAttend(res3.data.list);
         setTodayPoint(res4.data.list);
@@ -95,60 +109,76 @@ const RewardScreen = ({ navigation, route }) => {
     setPoint(point);
   };
 
+  const valueHistory = history === "none";
+
   return (
     <Container bg={theme.MainColor}>
       <StatusBar style={theme.MainColor} />
-      <ProfilInfo navigation={navigation} />
+      <View
+        style={{
+          paddingTop: Platform.OS === "ios" ? 45 : 5,
+        }}
+      >
+        <View style={{ height: Platform.OS === "ios" ? 75 : 100 }}>
+          <ProfilInfo
+            navigation={navigation}
+            isLogin={isLogin}
+            value={"reward"}
+          />
+        </View>
 
-      {modal ? (
-        <Modal
-          setModal={setModal}
-          content={
-            pressAttend ? "이미 출석체크를 하셨습니다." : "출석체크 완료!"
-          }
-          value={pressAttend}
-          point={point}
-        />
-      ) : (
-        ""
-      )}
+        {modal ? (
+          <Modal
+            setModal={setModal}
+            content={
+              pressAttend ? "이미 출석체크를 하셨습니다." : "출석체크 완료!"
+            }
+            value={pressAttend}
+            point={point}
+          />
+        ) : (
+          ""
+        )}
 
-      {history ? (
         <Wrap>
-          <>
-            <RewardLists
-              history={history}
-              checked={checked}
-              attend={attend}
-              sumPoint={sumPoint(history)}
-              cryptoJs={cryptoJs}
-              setUpdate={setUpdate}
-              update={update}
-              getModalData={getModalData}
-              today={sumPoint(todayPoint)}
-            />
-            <RewardHistory
-              history={check ? period : history}
-              navigation={navigation}
-              beg={check ? data.beg : weekAgo}
-              end={check ? data.end : today}
-            />
-          </>
+          {history == null ? (
+            <Wrap>
+              <Flex>
+                <Gif
+                  source={require("../../assets/images/loading.gif")}
+                  resizeMode="contain"
+                />
+              </Flex>
+            </Wrap>
+          ) : (
+            <>
+              <RewardLists
+                checked={checked}
+                attend={attend}
+                sumPoint={userPoint}
+                cryptoJs={cryptoJs}
+                setUpdate={setUpdate}
+                update={update}
+                getModalData={getModalData}
+                today={valueHistory ? 0 : sumPoint(todayPoint)}
+                isLogin={isLogin}
+              />
+              <RewardHistory
+                history={valueHistory ? "null" : check ? period : history}
+                navigation={navigation}
+                beg={check ? data.beg : weekAgo}
+                end={check ? data.end : today}
+                isLogin={isLogin}
+              />
+            </>
+          )}
         </Wrap>
-      ) : isLogin ? (
-        <Wrap>
-          <InfoText>로딩 중....</InfoText>
-        </Wrap>
-      ) : (
-        <Wrap>
-          <InfoText>로그인해주세요</InfoText>
-        </Wrap>
-      )}
+      </View>
     </Container>
   );
 };
 
-const Container = styled(SafeAreaView)`
+const Container = styled(View)`
   height: 100%;
   background-color: ${(props) => props.bg};
 `;
@@ -163,6 +193,14 @@ const InfoText = styled(Text)`
 const Wrap = styled(View)`
   background-color: #fff;
   height: 100%;
+`;
+
+const Flex = styled(View)`
+  margin: 70% auto;
+`;
+
+const Gif = styled(Image)`
+  width: 100px;
 `;
 
 export default RewardScreen;

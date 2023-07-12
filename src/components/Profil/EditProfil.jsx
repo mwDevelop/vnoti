@@ -8,14 +8,15 @@ import apis from "../../shared/apis";
 import ProfilImgPicker from "../ImagePicker/ProfilImg";
 import { Alert } from "react-native";
 import DatePicker from "../AddPill/DatePicker";
-import DropDownPicker from "react-native-dropdown-picker";
-import { AntDesign } from "@expo/vector-icons";
+import { SimpleLineIcons } from "@expo/vector-icons";
 
 import { StatusBar } from "expo-status-bar";
 import theme from "../../shared/theme";
+import SelectEmail from "../../elements/SelectBox";
 
 const EditProfil = () => {
-  const { profile, isLogin, setUser, user, setProfile } = useContext(UserStore);
+  const { profile, isLogin, setUser, user, setProfile, setUpdate, update } =
+    useContext(UserStore);
 
   useEffect(() => {}, [profile, isLogin]);
   const data = profile;
@@ -63,7 +64,7 @@ const EditProfil = () => {
     { label: "gmail.com", value: "gmail.com" },
     { label: "hanmail.com", value: "hanmail.com" },
     { label: "kakao.com", value: "kakao.com" },
-    { label: "직접입력하기", value: "directly" },
+    { label: "직접입력", value: "directly" },
   ]);
 
   const handleKeyDown = (e) => {
@@ -238,6 +239,7 @@ const EditProfil = () => {
 
     apis.editProfile(profile_Id, chageProfile).then((res) => {
       if (res?.data?.result == "000") {
+        setUpdate(update - 1);
       }
     });
   };
@@ -309,11 +311,11 @@ const EditProfil = () => {
                 }
                 keyboardType="email-address"
                 maxLength={15}
-                width={"30%"}
+                width={"33%"}
               />
               <Text>@</Text>
               {selectedCount == "directly" ? (
-                <>
+                <View>
                   <EmailInput
                     placeholder={"입력해주세요"}
                     onChangeText={(e) => handleChange("emailAd", e)}
@@ -326,48 +328,22 @@ const EditProfil = () => {
                     onPress={() => emailTest()}
                     style={{ position: "absolute", right: 10 }}
                   >
-                    <AntDesign name="down" size={16} color="black" />
-                  </TouchableOpacity>
-                </>
-              ) : (
-                <SelectEmail
-                  style={{ zIndex: 1000 }}
-                  placeholder={"선택해주세요"}
-                  open={openCountBox}
-                  value={selectedCount}
-                  items={emailOptions}
-                  setOpen={setOpenCountBox}
-                  setValue={setSelectedCount}
-                  setItems={setEmailOptions}
-                  containerStyle={{
-                    width: "60%",
-                  }}
-                  textStyle={{
-                    fontSize: 15,
-                  }}
-                  dropDownContainerStyle={{
-                    zIndex: 1000,
-                    borderColor: "#fff",
-                    background: "#fff",
-                    marginTop: 3,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 2, height: 2 },
-                    shadowOpacity: 0.3,
-                    elevation: 7,
-                    overflow: "hidden",
-                    width: "98%",
-                  }}
-                  placeholderStyle={{ fontSize: 15, color: "#5b5b5b" }}
-                  dropDownDirection="BOTTOM"
-                  TickIconComponent={() => (
-                    <AntDesign
-                      name="check"
-                      size={14}
+                    <SimpleLineIcons
+                      name={"arrow-down"}
+                      size={16}
                       color="black"
-                      style={{ width: 14 }}
                     />
-                  )}
-                />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={{ width: "60%", height: 30 }}>
+                  <SelectEmail
+                    data={emailOptions}
+                    setSelectedCount={setSelectedCount}
+                    placeholder={!email ? "선택해주세요" : email}
+                    top={"40px"}
+                  />
+                </View>
               )}
             </EmailWrap>
           ) : (
@@ -456,17 +432,6 @@ const EditProfil = () => {
   );
 };
 
-const SelectEmail = styled(DropDownPicker)`
-  width: 100%;
-  height: 20px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  padding: 0px 0px;
-
-  background-color: none;
-`;
-
 const EmailWrap = styled(View)`
   width: 60%;
   display: flex;
@@ -543,7 +508,7 @@ const Line = styled(View)`
 
 const Title = styled(Text)`
   font-size: 16px;
-  width: 24%;
+  width: 22%;
   padding: 5px 0px;
 `;
 

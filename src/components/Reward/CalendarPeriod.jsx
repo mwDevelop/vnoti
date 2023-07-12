@@ -132,6 +132,7 @@ const CalendarPeriod = ({ navigation }) => {
       MarkedDay("ending", e);
       setEndingDay(e);
     }
+    console.log(selected === e);
   };
 
   const checkColor = startDay === null || endingDay === null;

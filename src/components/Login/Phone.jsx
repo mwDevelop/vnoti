@@ -35,7 +35,6 @@ const Phone = ({ navigation, route }) => {
       apis
         .postAuth(data)
         .then((res) => {
-          console.log(res);
           if (res.data.result == "000") {
             setAuthCheck(true);
           } else {

@@ -36,40 +36,44 @@ const App = ({ navigation }) => {
 
   useEffect(() => {
     AsyncStorage.getAllKeys().then((res) => {
-      if (res.length == 0) {
+      if (!res.includes("check")) {
         const check = "firstTime";
         AsyncStorage.setItem("check", check);
         setOnBoarding(false);
-      } else if (res.length !== 0 || onBoarding == undefined) {
-        setOnBoarding(true);
-        if (res?.includes("main_user") === true) {
-          AsyncStorage.getItem("main_user").then((res) => {
-            const user = JSON.parse(res);
-            if (user !== null) {
-              const profile_id = user?.userProfileId;
-              apis.getProfile(profile_id).then((res) => {
-                const data = res?.data?.data;
-                const userInfo = {
-                  userProfileId: data?.profile_id,
-                  userId: data?.profile_mb_id,
-                  userName: data?.profile_name,
-                  userBirth: data?.profile_birth,
-                  userEmail: user?.userEmail,
-                  userGender: data?.profile_gender,
-                  userProfile: data?.profile_image,
-                  userPhoneNum: user?.userPhoneNum,
-                };
-                setUser(userInfo);
-                setProfile(userInfo);
-                setIsLogin(true);
-              });
-            }
-          });
+        setIsLogin(false);
+      } else {
+        if (res.length !== 0 || onBoarding == undefined) {
+          setOnBoarding(true);
+          if (res?.includes("main_user") === true) {
+            AsyncStorage.getItem("main_user").then((res) => {
+              const user = JSON.parse(res);
+
+              if (user !== null) {
+                const profile_id = user?.userProfileId;
+                apis.getProfile(profile_id).then((res) => {
+                  const data = res?.data?.data;
+                  const userInfo = {
+                    userProfileId: data?.profile_id,
+                    userId: data?.profile_mb_id,
+                    userName: data?.profile_name,
+                    userBirth: data?.profile_birth,
+                    userEmail: user?.userEmail,
+                    userGender: data?.profile_gender,
+                    userProfile: data?.profile_image,
+                    userPhoneNum: user?.userPhoneNum,
+                  };
+                  setUser(userInfo);
+                  setProfile(userInfo);
+                  setIsLogin(true);
+                });
+              }
+            });
+          } else {
+            setIsLogin(false);
+          }
         } else {
           setIsLogin(false);
         }
-      } else {
-        setIsLogin(false);
       }
     });
   }, [send]);

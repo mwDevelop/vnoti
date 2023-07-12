@@ -1,20 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  SafeAreaView,
-  Alert,
-} from "react-native";
+import { View, TouchableOpacity, Image, Alert } from "react-native";
 import ProfilInfo from "../components/Main/ProfilInfo";
 import styled from "styled-components";
 import MyPillItem from "../components/MyPill/MyPillItem";
 import * as Analytics from "expo-firebase-analytics";
-
 import { StatusBar } from "expo-status-bar";
 import theme from "../shared/theme";
-
 import { UserStore } from "../context";
+import { Platform } from "react-native";
 
 const MyPillScreen = ({ navigation }) => {
   const { isLogin } = useContext(UserStore);
@@ -35,20 +28,28 @@ const MyPillScreen = ({ navigation }) => {
   return (
     <Container>
       <StatusBar style={theme.MainColor} />
-      <>
-        <ProfilInfo navigation={navigation} />
-      </>
+      <View
+        style={{
+          paddingTop: Platform.OS === "ios" ? 45 : 5,
+        }}
+      >
+        <ProfilInfo navigation={navigation} isLogin={isLogin} />
 
-      <Wrap>
-        <MyPillItem navigation={navigation} setCountPill={setCountPill} />
-        {countPill ? (
-          ""
-        ) : (
-          <AddBtn onPress={() => onPressAddPill()} disabled={countPill}>
-            <Img source={require("../../assets/images/plus_icon.png")} />
-          </AddBtn>
-        )}
-      </Wrap>
+        <Wrap>
+          <MyPillItem navigation={navigation} setCountPill={setCountPill} />
+          {countPill ? (
+            ""
+          ) : (
+            <AddBtn
+              onPress={() => onPressAddPill()}
+              disabled={countPill}
+              bottom={Platform.OS === "ios" ? 170 : 220}
+            >
+              <Img source={require("../../assets/images/plus_icon.png")} />
+            </AddBtn>
+          )}
+        </Wrap>
+      </View>
     </Container>
   );
 };
@@ -57,14 +58,14 @@ const Wrap = styled(View)`
   background-color: #fff;
 `;
 
-const Container = styled(SafeAreaView)`
+const Container = styled(View)`
   background-color: #ffb74d;
   height: 100%;
 `;
 
 const AddBtn = styled(TouchableOpacity)`
   position: absolute;
-  bottom: 100px;
+  bottom: ${(props) => props.bottom}px;
   right: 10px;
 `;
 
